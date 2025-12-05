@@ -6,12 +6,11 @@ import org.junit.Test;
 import pages.LoginPage;
 import pages.MainPage;
 import pages.ProfilePage;
-import utils.TestData;
 
 import static org.junit.Assert.assertTrue;
 
 @DisplayName("Тесты навигации")
-public class NavigationTest extends BaseTest {
+public class NavigationTest extends AuthorizedTest {
 
     @Test
     @DisplayName("Переход в личный кабинет")
@@ -23,7 +22,7 @@ public class NavigationTest extends BaseTest {
 
         mainPage.clickLoginAccountButton();
         loginPage.waitForLoginPageLoad();
-        loginPage.fillLoginForm(TestData.getTestEmail(), TestData.getTestPassword());
+        loginPage.fillLoginForm(userEmail, userPassword);
         loginPage.clickLoginButton();
 
         assertTrue("Пользователь должен быть авторизован",
@@ -45,7 +44,7 @@ public class NavigationTest extends BaseTest {
 
         mainPage.clickLoginAccountButton();
         loginPage.waitForLoginPageLoad();
-        loginPage.fillLoginForm(TestData.getTestEmail(), TestData.getTestPassword());
+        loginPage.fillLoginForm(userEmail, userPassword);
         loginPage.clickLoginButton();
 
         assertTrue("Пользователь должен быть авторизован",
@@ -71,7 +70,7 @@ public class NavigationTest extends BaseTest {
 
         mainPage.clickLoginAccountButton();
         loginPage.waitForLoginPageLoad();
-        loginPage.fillLoginForm(TestData.getTestEmail(), TestData.getTestPassword());
+        loginPage.fillLoginForm(userEmail, userPassword);
         loginPage.clickLoginButton();
 
         assertTrue("Пользователь должен быть авторизован",

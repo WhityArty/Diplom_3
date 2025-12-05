@@ -1,5 +1,6 @@
 package utils;
 
+import dto.User;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
@@ -7,25 +8,24 @@ import static io.restassured.RestAssured.given;
 
 public class ApiClient {
 
-    private static final String BASE_URL = "https://stellarburgers.education-services.ru/api/";
+    private static final String BASE_URL = TestData.API_URL;
 
     static {
         RestAssured.baseURI = BASE_URL;
     }
 
-    public static Response registerUser(String email, String password, String name) {
+    public static Response registerUser(User user) {
         return given()
                 .header("Content-type", "application/json")
-                .body(String.format("{\"email\": \"%s\", \"password\": \"%s\", \"name\": \"%s\"}",
-                        email, password, name))
+                .body(user)
                 .when()
                 .post("/auth/register");
     }
 
-    public static Response loginUser(String email, String password) {
+    public static Response loginUser(User user) {
         return given()
                 .header("Content-type", "application/json")
-                .body(String.format("{\"email\": \"%s\", \"password\": \"%s\"}", email, password))
+                .body(user)
                 .when()
                 .post("/auth/login");
     }
@@ -41,8 +41,8 @@ public class ApiClient {
         }
     }
 
-    public static String getAccessToken(String email, String password) {
-        Response response = loginUser(email, password);
+    public static String getAccessToken(User user) {
+        Response response = loginUser(user);
         if (response.getStatusCode() == 200) {
             return response.then().extract().path("accessToken");
         }
@@ -51,14 +51,16 @@ public class ApiClient {
 
     // Метод для создания тестового пользователя
     public static TestUser createTestUser() {
-        String email = TestData.getRandomEmail();
-        String password = TestData.VALID_PASSWORD;
-        String name = TestData.getRandomName();
+        User user = new User(
+                TestData.getRandomEmail(),
+                TestData.VALID_PASSWORD,
+                TestData.getRandomName()
+        );
 
-        Response response = registerUser(email, password, name);
+        Response response = registerUser(user);
         if (response.getStatusCode() == 200) {
-            String accessToken = getAccessToken(email, password);
-            return new TestUser(email, password, name, accessToken);
+            String accessToken = getAccessToken(user);
+            return new TestUser(user.getEmail(), user.getPassword(), user.getName(), accessToken);
         }
         return null;
     }

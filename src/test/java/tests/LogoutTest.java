@@ -6,12 +6,11 @@ import org.junit.Test;
 import pages.LoginPage;
 import pages.MainPage;
 import pages.ProfilePage;
-import utils.TestData;
 
 import static org.junit.Assert.assertTrue;
 
 @DisplayName("Тесты выхода из системы")
-public class LogoutTest extends BaseTest {
+public class LogoutTest extends AuthorizedTest {
 
     @Test
     @DisplayName("Выход из аккаунта")
@@ -21,10 +20,9 @@ public class LogoutTest extends BaseTest {
         LoginPage loginPage = new LoginPage(driver);
         ProfilePage profilePage = new ProfilePage(driver);
 
-        // Вход в систему
         mainPage.clickLoginAccountButton();
         loginPage.waitForLoginPageLoad();
-        loginPage.fillLoginForm(TestData.getTestEmail(), TestData.getTestPassword());
+        loginPage.fillLoginForm(userEmail, userPassword);
         loginPage.clickLoginButton();
 
         // Переход в личный кабинет

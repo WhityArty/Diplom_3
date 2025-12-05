@@ -1,0 +1,11 @@
+# Конфигурация для тестов
+# Скопируйте этот файл в config.properties и заполните значения
+
+# Путь к YandexDriver (скачайте с https://github.com/yandex/YandexDriver/releases)
+yandex.driver.path=/your/path/to/yandexdriver
+
+# Путь к Yandex Browser (по умолчанию)
+# Для Windows: C:\Program Files (x86)\Yandex\YandexBrowser\Application\browser.exe
+# Для Mac: /Applications/Yandex.app/Contents/MacOS/Yandex
+# Для Linux: /usr/bin/yandex-browser
+yandex.browser.path=/your/path/to/yandex/browser

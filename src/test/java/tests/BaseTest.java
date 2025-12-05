@@ -7,11 +7,13 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import utils.ConfigReader;
+import utils.TestData;
+
 import java.io.File;
 import java.time.Duration;
 
 public class BaseTest {
-
     protected WebDriver driver;
 
     @Before
@@ -28,8 +30,9 @@ public class BaseTest {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.manage().window().maximize();
 
-        System.out.println("Переход на страницу: https://stellarburgers.education-services.ru/");
-        driver.get("https://stellarburgers.education-services.ru/");
+        String baseUrl = TestData.BASE_URL;
+        System.out.println("Переход на страницу: " + baseUrl);
+        driver.get(baseUrl);
 
         String title = driver.getTitle();
         System.out.println("Заголовок страницы: " + title);
@@ -49,40 +52,43 @@ public class BaseTest {
     }
 
     private void setupYandexBrowser() {
-        // Указываем путь к YandexDriver
-        String yandexDriverPath = "/Users/kristinabelomestnova/Documents/yandexdriver";
-
-        File driverFile = new File(yandexDriverPath);
-        if (!driverFile.exists()) {
-            throw new RuntimeException("YandexDriver не найден по пути: " + yandexDriverPath);
-        }
-
-        if (!driverFile.canExecute()) {
-            driverFile.setExecutable(true);
-        }
-
-        System.out.println("Используем YandexDriver по пути: " + yandexDriverPath);
-
-        ChromeDriverService service = new ChromeDriverService.Builder()
-                .usingDriverExecutable(driverFile)
-                .build();
-
-        ChromeOptions options = new ChromeOptions();
-
-        options.setBinary("/Applications/Yandex.app/Contents/MacOS/Yandex");
-
-        options.addArguments("--no-sandbox");
-        options.addArguments("--disable-dev-shm-usage");
-        options.addArguments("--remote-allow-origins=*");
-        options.addArguments("--disable-blink-features=AutomationControlled");
-        options.addArguments("--disable-extensions");
-        options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});
-        options.addArguments("--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 YaBrowser/24.1.0.0 Safari/537.36");
-
         try {
+            String yandexDriverPath = ConfigReader.getYandexDriverPath();
+            String yandexBrowserPath = ConfigReader.getYandexBrowserPath();
+
+            File driverFile = new File(yandexDriverPath);
+            if (!driverFile.exists()) {
+                throw new RuntimeException("YandexDriver не найден по пути: " + yandexDriverPath);
+            }
+
+            if (!driverFile.canExecute()) {
+                driverFile.setExecutable(true);
+            }
+
+            System.out.println("Используем YandexDriver по пути: " + yandexDriverPath);
+
+            ChromeDriverService service = new ChromeDriverService.Builder()
+                    .usingDriverExecutable(driverFile)
+                    .build();
+
+            ChromeOptions options = new ChromeOptions();
+            options.setBinary(yandexBrowserPath);
+            options.addArguments("--no-sandbox");
+            options.addArguments("--disable-dev-shm-usage");
+            options.addArguments("--remote-allow-origins=*");
+            options.addArguments("--disable-blink-features=AutomationControlled");
+            options.addArguments("--disable-extensions");
+            options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});
+            options.addArguments("--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 YaBrowser/24.1.0.0 Safari/537.36");
+
             driver = new ChromeDriver(service, options);
         } catch (Exception e) {
-            throw new RuntimeException("Не удалось запустить YandexDriver: " + e.getMessage(), e);
+            throw new RuntimeException("Не удалось запустить YandexBrowser. Убедитесь что: \n" +
+                    "1. Создан файл config.properties в src/main/resources/\n" +
+                    "2. В файле указаны корректные пути:\n" +
+                    "   yandex.driver.path=/ваш/путь/к/yandexdriver\n" +
+                    "   yandex.browser.path=/ваш/путь/к/yandex/browser\n" +
+                    "Ошибка: " + e.getMessage(), e);
         }
     }
 

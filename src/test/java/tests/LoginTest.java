@@ -4,12 +4,11 @@ import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import org.junit.Test;
 import pages.*;
-import utils.TestData;
 
 import static org.junit.Assert.assertTrue;
 
 @DisplayName("Тесты входа в систему")
-public class LoginTest extends BaseTest {
+public class LoginTest extends AuthorizedTest {
 
     @Test
     @DisplayName("Вход через кнопку 'Войти в аккаунт' на главной")
@@ -21,7 +20,7 @@ public class LoginTest extends BaseTest {
 
         mainPage.clickLoginAccountButton();
         loginPage.waitForLoginPageLoad();
-        loginPage.fillLoginForm(TestData.getTestEmail(), TestData.getTestPassword());
+        loginPage.fillLoginForm(userEmail, userPassword);
         loginPage.clickLoginButton();
 
         mainPage.clickPersonalAccountButton();
@@ -40,7 +39,7 @@ public class LoginTest extends BaseTest {
 
         mainPage.clickPersonalAccountButton();
         loginPage.waitForLoginPageLoad();
-        loginPage.fillLoginForm(TestData.getTestEmail(), TestData.getTestPassword());
+        loginPage.fillLoginForm(userEmail, userPassword);
         loginPage.clickLoginButton();
 
         mainPage.clickPersonalAccountButton();
@@ -63,7 +62,7 @@ public class LoginTest extends BaseTest {
         registrationPage.clickLoginLink();
 
         loginPage.waitForLoginPageLoad();
-        loginPage.fillLoginForm(TestData.getTestEmail(), TestData.getTestPassword());
+        loginPage.fillLoginForm(userEmail, userPassword);
         loginPage.clickLoginButton();
 
         mainPage.clickPersonalAccountButton();
@@ -81,23 +80,16 @@ public class LoginTest extends BaseTest {
         PasswordRecoveryPage passwordRecoveryPage = new PasswordRecoveryPage(driver);
         ProfilePage profilePage = new ProfilePage(driver);
 
-        // Переход на страницу входа
         mainPage.clickLoginAccountButton();
         loginPage.waitForLoginPageLoad();
-
-        // Переход на страницу восстановления пароля
         loginPage.clickRecoverPasswordLink();
         passwordRecoveryPage.waitForRecoveryPageLoad();
-
-        // Возврат на страницу входа через ссылку "Войти"
         passwordRecoveryPage.clickLoginLink();
 
-        // Заполнение формы входа
         loginPage.waitForLoginPageLoad();
-        loginPage.fillLoginForm(TestData.getTestEmail(), TestData.getTestPassword());
+        loginPage.fillLoginForm(userEmail, userPassword);
         loginPage.clickLoginButton();
 
-        // Проверка успешного входа
         mainPage.clickPersonalAccountButton();
         profilePage.waitForProfilePageLoad();
         assertTrue("Должна отображаться страница профиля после входа",
